@@ -1,0 +1,27 @@
+function [D_all, ek_all] = color_image_dictionary(varargin)
+Parser = inputParser;
+addOptional(Parser, 'filename', 'lena_512.png');
+addOptional(Parser, 'size_of_atom', [1, 1] * 9);
+addOptional(Parser, 'num_of_atom', 81);
+addOptional(Parser, 'overlapping_size', 4);
+addOptional(Parser, 'regularization_parameter', 50);
+addOptional(Parser, 'tolerance', 1e-4);
+addOptional(Parser, 'max_iterations', 1e4);
+parse(Parser, varargin{:});
+
+filename = Parser.Results.filename;
+p = Parser.Results.size_of_atom;
+nA = Parser.Results.num_of_atom;
+gap = Parser.Results.overlapping_size;
+lambda = Parser.Results.regularization_parameter;
+tol = Parser.Results.tolerance;
+maxits = Parser.Results.max_iterations;
+
+D_all = zeros(np, nA)
+% 读取图像
+for i=1:3
+    [D, ek] = gray_image_dictionary(varargin);
+end
+
+end
+
