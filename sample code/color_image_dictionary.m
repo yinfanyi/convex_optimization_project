@@ -22,15 +22,30 @@ D_all = zeros(np, nA, 3);
 ek_all = zeros(maxits, 3); %% record residual error
 
 % 读取图像
-   
-% 将图像的rgb分别分为三个图像，储存在临时文件夹里
+u = double(imread(filename));
 
-% 读取临时文件夹中的文件
+% 将图像的rgb分别分为三个图像，储存在临时文件夹里
+r = u(:,:,1); 
+g = u(:,:,2); 
+b = u(:,:,3); 
+filename_temp = cell(3,1);
+filename_temp{1} = 'temp/temp_r.png';
+filename_temp{2} = 'temp/temp_g.png';
+filename_temp{3} = 'temp/temp_b.png';
+imwrite(uint8(r), filename_temp{1}); 
+imwrite(uint8(g), filename_temp{2}); 
+imwrite(uint8(b), filename_temp{3});
+
 for i=1:3
-    [D, ek] = gray_image_dictionary(varargin);
+    [D, ek] = gray_image_dictionary('filename', filename_temp{i}, ...
+        'size_of_atom', p, 'num_of_atom', nA, 'overlapping_size', gap, ...
+        'regularization_parameter', lambda, 'tolerance', tol, ...
+        'max_iterations', maxits);
     D_all(:, :, i) = D;
-    ek_all(:, i) = ek;
+    ek_all(1:size(ek, 1), i) = ek;
+    delete(filename_temp{i}) % 删除临时文件夹的文件
 end
+
 
 end
 

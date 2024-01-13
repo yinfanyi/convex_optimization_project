@@ -47,7 +47,7 @@ for j = 1:numel(J)
         patch_ = patch(:) - 1* mean(patch(:)); % remove the DC part
 
         mP(c) = mean(patch(:)); % mean value of each patch is recorded for reconstruction
-        X(:, c) = patch_; 
+        X(:, c) = patch_;
 
         c = c + 1;
     end
@@ -56,7 +56,6 @@ end
 % TODO: 适应彩色图片
 D0 = eye(np, nA) /1;
 A0 = repmat(D0(:, 1:np)\ X, nA/np, 1);
-
 
 
 D = D0;
@@ -75,7 +74,7 @@ while its<=maxits-1
     % gamma_D = 1.9/L_D; % the step-size
 
     grad_D = (-X + D*A)* (A'); % gradient respect to D
-    D = D - (1.9/L_D)* grad_D; 
+    D = D - (1.9/L_D)* grad_D;
 
     % enforcing unit length constraint on to the atoms
     for j=1:nA
@@ -96,21 +95,21 @@ while its<=maxits-1
 
     if mod(its, 5e2)==0; lambda = max(lambda/1.5, 1/2); end
 
-    if ek(its) < tol || ek(its) > 1e10 
-        ek = ek(1:its-1);
-        break; 
-    end
-
     if mod(its,5e2)==0
         fprintf('%06d, time: %05.2fs, rel_error: %05.2e, obj_value: %05.2e...\n',...
             its, toc, ek(its), norm(X-D*A, 'fro')^2);
-
+        figure(02)
         imgsc(D);
         pause(.01);
     end
 
+    if ek(its) < tol || ek(its) > 1e10
+        if its>1e3-1
+            ek = ek(1:its-1);
+            break;
+        end
+    end
     its = its + 1;
 end
-
 end
 
