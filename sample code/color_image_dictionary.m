@@ -7,6 +7,7 @@ addOptional(Parser, 'overlapping_size', 4);
 addOptional(Parser, 'regularization_parameter', 50);
 addOptional(Parser, 'tolerance', 1e-4);
 addOptional(Parser, 'max_iterations', 1e4);
+addOptional(Parser, 'noise_image_RGB', zeros(500,500,3));
 parse(Parser, varargin{:});
 
 filename = Parser.Results.filename;
@@ -16,24 +17,31 @@ gap = Parser.Results.overlapping_size;
 lambda = Parser.Results.regularization_parameter;
 tol = Parser.Results.tolerance;
 maxits = Parser.Results.max_iterations;
+noise_image_RGB = Parser.Results.noise_image_RGB;
+
 
 np = prod(p); % number of pixels in each patch
 D_all = zeros(np, nA, 3);
 ek_all = zeros(maxits, 3); %% record residual error
 
 % 读取图像
-u = double(imread(filename));
+% u = double(imread(filename));
+if ismember('max_iterations', fieldnames(Parser.Results))
+    u = double(noise_image_RGB);
+else
+    u = double(imread(filename));
+end
 
 % 将图像的rgb分别分为三个图像，储存在临时文件夹里
-r = u(:,:,1); 
-g = u(:,:,2); 
-b = u(:,:,3); 
+r = u(:,:,1);
+g = u(:,:,2);
+b = u(:,:,3);
 filename_temp = cell(3,1);
 filename_temp{1} = 'temp/temp_r.png';
 filename_temp{2} = 'temp/temp_g.png';
 filename_temp{3} = 'temp/temp_b.png';
-imwrite(uint8(r), filename_temp{1}); 
-imwrite(uint8(g), filename_temp{2}); 
+imwrite(uint8(r), filename_temp{1});
+imwrite(uint8(g), filename_temp{2});
 imwrite(uint8(b), filename_temp{3});
 
 for i=1:3

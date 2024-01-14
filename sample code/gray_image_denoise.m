@@ -1,12 +1,12 @@
-function [C, ek_lasso, mP_noise] = image_denoise(varargin)
+function [C, ek_lasso, mP_noise] = gray_image_denoise(varargin)
 Parser = inputParser;
-addOptional(Parser, 'noise_image', zeros(500, 500, 3));
+addParameter(Parser, 'noise_image', zeros(500, 500));
 addOptional(Parser, 'size_of_atom', [1, 1] * 9);
 addOptional(Parser, 'num_of_atom', 81);
 addOptional(Parser, 'overlapping_size', 4);
 addOptional(Parser, 'tolerance', 1e-4);
 addOptional(Parser, 'max_iterations', 1e4);
-addOptional(Parser, 'dictionary', zeros(81,81,3));
+addParameter(Parser, 'dictionary', zeros(81,81,3));
 addOptional(Parser, 'regularization_parameter', 100)
 parse(Parser, varargin{:});
 
@@ -16,7 +16,7 @@ gap = Parser.Results.overlapping_size;
 nA = Parser.Results.num_of_atom;
 tol = Parser.Results.tolerance;
 maxits = Parser.Results.max_iterations;
-D_rgb = Parser.Results.dictionary;
+D = Parser.Results.dictionary;
 mu = Parser.Results.regularization_parameter;
 
 
@@ -34,8 +34,8 @@ A = A0;
 
 % 将noise_image分为RBG通道
 % 三个通道的各自生成patch
-D = D_rgb(:,:,1);
-u_noise = noise_image(:,:,1);
+% 现在只有R通道
+u_noise = noise_image;
 X_noise = zeros(np, nP);
 mP_noise = zeros(nP, 1);
 
