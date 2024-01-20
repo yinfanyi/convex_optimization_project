@@ -25,7 +25,7 @@ else % multi-channel
 
     p = zeros(s,1);
     for i = 1:s
-        mse = norm(f(:,:,i)-g(:,:,i), 'fro')^2/N;
+        mse = ((norm(f(:,:,i)-g(:,:,i), 'fro'))^2)/N;
         p(i) = 10.*log10((max_-min_)^2/mse);
     end
 
